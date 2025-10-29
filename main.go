@@ -147,5 +147,6 @@ func main() {
 	for _, versionConstraint := range strings.Split(config.RequiredVersion, ",") {
 		versionConstraint = strings.TrimSpace(versionConstraint)
 		fmt.Println(versionConstraint)
+		// TODO
 	}
 }
