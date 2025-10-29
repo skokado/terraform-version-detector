@@ -1,6 +1,7 @@
 import argparse
-from enum import StrEnum
 import json
+import sys
+from enum import StrEnum
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -124,13 +125,18 @@ def main():
     )
     parser.add_argument(
         "--path",
-        type=Path,
+        type=str,
         help="Relative path to the Terraform configuration directory",
         required=False,
-        default=Path("."),
+        default=".",
     )
     args = parser.parse_args()
-    path: Path = args.path
+    path = Path(args.path)
+
+    if not path.exists():
+        raise ValueError(f"The specified path does not exist: {path}")
+    if path.is_file():
+        raise ValueError(f"The specified path is a file, expected a directory: {path}")
 
     terraform_releases = fetch_terraform_releases()
     latest_release = terraform_releases[0]
@@ -142,19 +148,19 @@ def main():
 
         for terraform_block in parsed.get("terraform", []):
             if required_version := terraform_block.get("required_version"):
-                print(f"Found version specification in {tf_file.name}")
+                print(f"Found version specification in {tf_file.name}", file=sys.stderr)
                 break
         else:
-            print("No version specification found, using latest.")
+            print("No version specification found, using latest.", file=sys.stderr)
             version_str = ".".join(list(map(str, latest_release)))
-            print(version_str)
+            print(version_str, end="")
             return
 
     assert required_version
     for version in terraform_releases:
         if check_version(required_version, version):
             version_str = ".".join(list(map(str, version)))
-            print(version_str)
+            print(version_str, end="")
             return
 
 
