@@ -119,10 +119,6 @@ def fetch_terraform_releases() -> list[tuple[int, int, int]]:
     return versions  # pyright: ignore[reportReturnType]
 
 
-def version_to_str(version: tuple[int, int, int]) -> str:
-    return ".".join(map(str, version))
-
-
 def find_required_version(path: Path) -> str | None:
     """Find required_version from terraform blocks in .tf files.
 
@@ -167,11 +163,17 @@ def main():
         print("No version specification found, using latest.", file=sys.stderr)
 
         latest_release = terraform_releases[0]
-        print(".".join(map(str, latest_release)), end="")
+        version_str = ".".join(map(str, latest_release))
+        print(f"Using v{version_str}", file=sys.stderr)
+
+        print(version_str, end="")
         return
 
     for version in terraform_releases:
         if check_version(required_version, version):
+            version_str = ".".join(map(str, version))
+            print(f"Using v{version_str}.", file=sys.stderr)
+
             print(".".join(map(str, version)), end="")
             return
 
