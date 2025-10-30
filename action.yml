@@ -26,10 +26,12 @@ runs:
       uses: astral-sh/setup-uv@v6
     
     - name : Install dependencies
+      shell: bash
       run: uv sync
 
     - name: main
       id: detect-version
+      shell: bash
       run: |
         uv run main.py --path ${{ inputs.path }} > result
         echo "terraform=$(cat result)" >> $GITHUB_OUTPUT
