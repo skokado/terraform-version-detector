@@ -119,6 +119,28 @@ def fetch_terraform_releases() -> list[tuple[int, int, int]]:
     return versions  # pyright: ignore[reportReturnType]
 
 
+def version_to_str(version: tuple[int, int, int]) -> str:
+    return ".".join(map(str, version))
+
+
+def find_required_version(path: Path) -> str | None:
+    """Find required_version from terraform blocks in .tf files.
+
+    Returns:
+        The required_version string if found, None otherwise.
+    """
+    for tf_file in path.glob("*.tf"):
+        with open(tf_file, "r") as file:
+            parsed = hcl2.load(file)  # pyright: ignore[reportPrivateImportUsage]
+
+        for terraform_block in parsed.get("terraform", []):
+            if required_version := terraform_block.get("required_version"):
+                print(f"Found version specification in {tf_file.name}", file=sys.stderr)
+                return required_version
+
+    return None
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Detect Terraform required_version from .tf files"
@@ -139,33 +161,18 @@ def main():
         raise ValueError(f"The specified path is a file, expected a directory: {path}")
 
     terraform_releases = fetch_terraform_releases()
-    latest_release = terraform_releases[0]
 
-    required_version: str | None = None
-    found = False
-    for tf_file in path.glob("*.tf"):
-        if found:
-            break
-
-        with open(tf_file, "r") as file:
-            parsed = hcl2.load(file)  # pyright: ignore[reportPrivateImportUsage]
-
-        for terraform_block in parsed.get("terraform", []):
-            if required_version := terraform_block.get("required_version"):
-                print(f"Found version specification in {tf_file.name}", file=sys.stderr)
-                found = True
-
-    if not found:
+    required_version = find_required_version(path)
+    if required_version is None:
         print("No version specification found, using latest.", file=sys.stderr)
-        version_str = ".".join(list(map(str, latest_release)))
-        print(version_str, end="")
+
+        latest_release = terraform_releases[0]
+        print(".".join(map(str, latest_release)), end="")
         return
 
-    assert required_version
     for version in terraform_releases:
         if check_version(required_version, version):
-            version_str = ".".join(list(map(str, version)))
-            print(version_str, end="")
+            print(".".join(map(str, version)), end="")
             return
 
 
