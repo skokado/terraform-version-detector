@@ -1,0 +1,36 @@
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - main.py
+      - action.yml
+
+jobs:
+  test-python:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        test-case:
+          - path: tests/app1
+            expected: "1.12.1"
+          - path: tests/app2
+            expected: "1.10.5"
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+            persist-credentials: false
+
+      - name: Detect Terraform Version
+        id: terraform-version
+        uses: ./
+        with:
+          path: ${{ matrix.test-case.path }}
+      
+      - name: test
+        run: |
+          if [ "${{ steps.terraform-version.outputs.terraform-version }}" != "${{ matrix.test-case.expected }}" ]; then
+            exit 1
+          fi
