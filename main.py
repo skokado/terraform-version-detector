@@ -119,10 +119,6 @@ def fetch_terraform_releases() -> list[tuple[int, int, int]]:
     return versions  # pyright: ignore[reportReturnType]
 
 
-def version_to_str(version: tuple[int, int, int]) -> str:
-    return ".".join(map(str, version))
-
-
 def find_required_version(path: Path) -> str | None:
     """Find required_version from terraform blocks in .tf files.
 
