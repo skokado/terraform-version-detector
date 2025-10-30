@@ -19,18 +19,20 @@ runs:
   steps:
     - uses: actions/setup-python@v6
       with:
-        python-version-file: "pyproject.toml"
+        python-version-file: ${{ github.action_path }}/pyproject.toml
 
     - name: Install uv
       uses: astral-sh/setup-uv@v6
     
     - name : Install dependencies
       shell: bash
+      env:
+        UV_WORKING_DIRECTORY: ${{ github.action_path }}
       run: uv sync
 
     - name: main
       id: detect-version
       shell: bash
       run: |
-        uv run main.py --path ${{ inputs.path }} > result
+        uv run ${{ github.action_path }}/main.py --path ${{ inputs.path }} > result
         echo "terraform=$(cat result)" >> $GITHUB_OUTPUT
