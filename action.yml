@@ -28,13 +28,6 @@ runs:
     - name : Install dependencies
       shell: bash
       run: uv sync
-    
-    - name: debug
-      shell: bash
-      run: |
-        pwd
-        ls -la
-        ls -la ${{ inputs.path }}
 
     - name: main
       id: detect-version
