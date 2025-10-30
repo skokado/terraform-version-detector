@@ -1,0 +1,19 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  update-semver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+  
+    - uses: haya14busa/action-update-semver@v1
+      with:
+        major_version_tag_only: false
