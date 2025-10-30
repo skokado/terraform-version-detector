@@ -1,0 +1,28 @@
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - main.py
+      - pyproject.toml
+      - uv.lock
+
+jobs:
+  test-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            persist-credentials: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      
+      - name: test
+        run: |
+          uv sync
+          uv run python -m doctest main.py -v
