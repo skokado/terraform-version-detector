@@ -167,11 +167,17 @@ def main():
         print("No version specification found, using latest.", file=sys.stderr)
 
         latest_release = terraform_releases[0]
-        print(".".join(map(str, latest_release)), end="")
+        version_str = ".".join(map(str, latest_release))
+        print(f"Using v{version_str}", file=sys.stderr)
+
+        print(version_str, end="")
         return
 
     for version in terraform_releases:
         if check_version(required_version, version):
+            version_str = ".".join(map(str, version))
+            print(f"Using v{version_str}.", file=sys.stderr)
+
             print(".".join(map(str, version)), end="")
             return
 
