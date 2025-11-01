@@ -5,6 +5,7 @@ on:
     paths:
       - main.py
       - action.yml
+      - .github/workflows/test-action.yaml
 
 jobs:
   test-python:

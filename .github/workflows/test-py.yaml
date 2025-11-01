@@ -6,6 +6,7 @@ on:
       - main.py
       - pyproject.toml
       - uv.lock
+      - .github/workflows/test-py.yaml
 
 jobs:
   test-python:
