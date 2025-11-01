@@ -28,7 +28,7 @@ steps:
 # terraform {
 #   required_version = ">= 1.10.0, < 1.11.0"
 # }
-- uses: skokado/terraform-version-detector@v0.1
+- uses: skokado/terraform-version-detector@v1.1
   id: sample1
   with:
     path: app1/
