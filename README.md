@@ -8,7 +8,7 @@ Basic usage:
 steps:
 - uses: actions/checkout@v5
 
-- uses: skokado/terraform-version-detector@v1
+- uses: skokado/terraform-version-detector@v1.2
   id: terraform-version
   with:
     path: path/to/dir
