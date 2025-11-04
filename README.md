@@ -37,7 +37,7 @@ steps:
 # => Latest of 1.10.x 
 ```
 
-For more details, see Terraform documentation on [Version Constraints](https://developer.hashicorp.com/terraform/language/versions#version-constraints).
+For more details, see Terraform documentation on [Version Constraints](https://developer.hashicorp.com/terraform/language/expressions/version-constraints#version-constraint-syntax).
 
 # Inputs
 
