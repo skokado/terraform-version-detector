@@ -39,12 +39,13 @@ def parse_right_most(version_spec: str) -> str:
     patch = int(parts[2]) if len(parts) > 2 else 0
 
     lower_bound = f">= {major}.{minor}.{patch}"
-    if len(parts) == 1:
-        upper_bound = f"< {major + 1}.0.0"
-    elif len(parts) == 2:
-        upper_bound = f"< {major + 1}.0.0"
-    else:
-        upper_bound = f"< {major}.{minor + 1}.0"
+    match len(parts):
+        case 1:
+            upper_bound = f"< {major + 1}.0.0"
+        case 2:
+            upper_bound = f"< {major + 1}.0.0"
+        case _:
+            upper_bound = f"< {major}.{minor + 1}.0"
 
     return f"{lower_bound}, {upper_bound}"
 
@@ -81,18 +82,25 @@ def check_version(version_spec: str, target_version: tuple[int, int, int]) -> bo
         patch = int(version_parts[2]) if len(version_parts) > 2 else 0
         parts = (major, minor, patch)
 
-        if operator == VersionOperator.EQ and not target_version == parts:
-            return False
-        elif operator == VersionOperator.NE and not target_version != parts:
-            return False
-        elif operator == VersionOperator.GT and not target_version > parts:
-            return False
-        elif operator == VersionOperator.GTE and not target_version >= parts:
-            return False
-        elif operator == VersionOperator.LT and not target_version < parts:
-            return False
-        elif operator == VersionOperator.LTE and not target_version <= parts:
-            return False
+        match operator:
+            case VersionOperator.EQ:
+                if not target_version == parts:
+                    return False
+            case VersionOperator.NE:
+                if not target_version != parts:
+                    return False
+            case VersionOperator.GT:
+                if not target_version > parts:
+                    return False
+            case VersionOperator.GTE:
+                if not target_version >= parts:
+                    return False
+            case VersionOperator.LT:
+                if not target_version < parts:
+                    return False
+            case VersionOperator.LTE:
+                if not target_version <= parts:
+                    return False
 
     return True
 
